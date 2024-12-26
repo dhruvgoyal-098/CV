@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal CV Webpage</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+            cursor: url('https://your-cursor-image-url.png'), auto;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+        
+        .navbar {
+            position: sticky;
+            top: 0;
+            background: linear-gradient(90deg, #007bff, #00bcd4);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+
+        .navbar a:hover {
+            color: #ffeb3b;
+        }
+
+        #download-cv {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            display: inline-block;
+            text-align: center;
+        }
+
+        #download-cv:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        #download-cv:active {
+            background-color: #003d75;
+            transform: scale(1);
+        }
+
+        #theme-switcher {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+
+        #about {
+            text-align: center;
+            padding: 50px 0;
+            background: url('https://example.com/your-background.jpg') no-repeat center center/cover;
+            background-attachment: fixed;
+            color: white;
+            padding: 100px 0;
+
+        }
+
+        #about p {
+            color: white;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .profile-pic {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        #about h1 {
+            margin: 10px 0;
+        }
+
+        #about h2 {
+            color: gray;
+        }
+
+        #skills .skill-bar {
+            margin: 15px 0;
+        }
+
+        .skill-bar span {
+            display: block;
+            font-weight: bold;
+        }
+
+        .progress {
+            background: #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            height: 20px;
+            margin: 5px 0;
+            position: relative;
+        }
+
+        .progress div {
+            height: 100%;
+            position: absolute;
+            animation: fillBar 2s ease-out forwards;
+        }
+
+        .progress .html {
+            background: #f16529;
+            width: 90%;
+        }
+
+        .progress .css {
+            background: #2965f1;
+            width: 85%;
+        }
+
+        .progress .js {
+            background: #f7df1e;
+            width: 75%;
+        }
+
+        .progress .gpp {
+            background: purple;
+            width: 75%;
+        }
+
+        .progress .c {
+            background: #a8b9cc;
+            width: 85%;
+        }
+
+        #back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 50%;
+            display: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            z-index: 1000;
+        }
+
+        #back-to-top:hover {
+            background: #0056b3;
+        }
+
+        .navbar .container span.clock {
+            margin-left: auto;
+            padding-left: 20px;
+        }
+
+        .navbar .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        @keyframes fillBar {
+            from {
+                width: 0;
+            }
+        }
+
+        form input,
+        form textarea,
+        form button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        form button {
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        a,
+        button {
+            text-decoration: none;
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.2s;
+            text-align: center;
+        }
+
+        .project a {
+            color: white;
+            background-color: #007bff;
+            margin: 5px;
+        }
+
+        .project a:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .social a {
+            color: white;
+            background-color: #333;
+            margin: 5px;
+            padding: 10px 15px;
+            border-radius: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2em;
+        }
+
+        .social a:hover {
+            background-color: #007bff;
+            transform: rotate(10deg);
+        }
+
+        .dark-theme {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        .dark-theme .navbar {
+            background: linear-gradient(90deg, #1e1e1e, #333);
+        }
+
+        .dark-theme .navbar a {
+            color: #ffffff;
+        }
+
+        .dark-theme #theme-switcher {
+            color: #ffffff;
+        }
+
+        .dark-theme .progress {
+            background: #333;
+        }
+
+        .dark-theme form input,
+        .dark-theme form textarea {
+            background-color: #333;
+            color: white;
+            border: 1px solid #555;
+        }
+
+        .dark-theme form button {
+            background-color: #00bcd4;
+        }
+
+        .dark-theme .project a {
+            background-color: #00bcd4;
+        }
+
+        .dark-theme .project a:hover {
+            background-color: #008c9e;
+        }
+
+        .dark-theme .social a {
+            background-color: #758760;
+        }
+
+        .dark-theme .social a:hover {
+            background-color: #00bcd4;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="#about">About</a>
+            <a href="#skills">Skills</a>
+            <a href="#education">Education</a>
+            <a href="#projects">Projects</a>
+            <a href="#contact">Contact</a>
+            <button id="theme-switcher">🌙</button>
+            <span>Email - dhruvgoyal1618@gmail.com</span>
+            <span class="clock"></span>
+        </div>
+    </nav>
+
+    <section id="about">
+        <div class="container">
+            <img src="https://github.com/user-attachments/assets/cae46e25-9398-46cc-8bd7-105e2d0fca26"
+                alt="Profile Picture" class="profile-pic">
+            <h1>Dhruv Goyal</h1>
+            <h2></h2>
+            <p>Welcome to my personal CV webpage. I’m passionate about building modern web applications and solving
+                real-world problems.</p>
+            <button id="download-cv">Download CV as PDF</button>
+        </div>
+    </section>
+
+    <section id="skills">
+        <div class="container">
+            <h2>Skills</h2>
+            <div class="skill-bar">
+                <span>HTML</span>
+                <div class="progress">
+                    <div class="html"></div>
+                </div>
+            </div>
+            <div class="skill-bar">
+                <span>CSS</span>
+                <div class="progress">
+                    <div class="css"></div>
+                </div>
+            </div>
+            <div class="skill-bar">
+                <span>JavaScript</span>
+                <div class="progress">
+                    <div class="js"></div>
+                </div>
+            </div>
+            <div class="skill-bar">
+                <span>C++</span>
+                <div class="progress">
+                    <div class="gpp"></div>
+                </div>
+            </div>
+            <div class="skill-bar">
+                <span>C</span>
+                <div class="progress">
+                    <div class="c"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="education">
+        <div class="container">
+            <h2>Education</h2>
+            <ul>
+                <li><strong>Bachelor’s Degree in Information Technology</strong> - IIIT Allahabad (2024 - 2028)</li>
+                <li><strong>High School</strong> - Delhi Public School (2020 - 2024)</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="projects">
+        <div class="container">
+            <h2>Projects</h2>
+            <div class="project">
+                <h3>To-Do List</h3>
+                <p>Web Page for creating personal To-Do List.</p>
+                <a href="https://dhruvgoyal-098.github.io/To-Do/To-Do.html" target="_blank">Live Demo</a>
+            </div>
+            <div class="project">
+                <h3>Fixify</h3>
+                <p>Local Services App.</p>
+                <a href="https://www.figma.com" target="_blank">Live Demo</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="container">
+            <h2>Contact Me</h2>
+            <form action="#" method="post">
+                <input type="text" name="name" placeholder="Your Name" required>
+                <input type="email" name="email" placeholder="Your Email" required>
+                <textarea name="message" placeholder="Your Message" required></textarea>
+                <button type="submit">Send</button>
+            </form>
+            <div class="social">
+                <a href="https://www.linkedin.com/in/dhruv-goyal-134b49199/" target="_blank">LinkedIn</a>
+                <a href="https://github.com/dhruvgoyal-098" target="_blank">GitHub</a>
+            </div>
+        </div>
+
+    </section>
+    <button id="back-to-top">↑</button>
+    <script>
+        const backToTop = document.getElementById('back-to-top');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTop.style.display = 'block';
+            } else {
+                backToTop.style.display = 'none';
+            }
+        });
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        const text = "Aspiring Software Developer";
+        let index = 0;
+
+        function typeWriter() {
+            const tagline = document.querySelector('#about h2');
+            if (index < text.length) {
+                tagline.innerHTML += text.charAt(index);
+                index++;
+                setTimeout(typeWriter, 100);
+            }
+        }
+        document.addEventListener("DOMContentLoaded", typeWriter);
+
+        const skillBars = document.querySelectorAll('.progress div');
+
+        function animateSkillBars() {
+            skillBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0';
+                setTimeout(() => {
+                    bar.style.transition = 'width 2s ease-out';
+                    bar.style.width = width;
+                }, 300);
+            });
+        }
+
+
+        let skillBarsAnimated = false;
+
+        window.addEventListener('scroll', () => {
+            const skillsSection = document.querySelector('#skills');
+            const rect = skillsSection.getBoundingClientRect();
+            if (!skillBarsAnimated && rect.top < window.innerHeight && rect.bottom >= 0) {
+                animateSkillBars();
+                skillBarsAnimated = true;
+            }
+        });
+
+
+        const form = document.querySelector('form');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const inputs = form.querySelectorAll('input, textarea');
+            let valid = true;
+
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    input.style.border = '2px solid red';
+                    valid = false;
+                } else {
+                    input.style.border = '';
+                }
+            });
+
+            if (valid) {
+                alert('Thank you for contacting me!');
+                form.reset();
+            }
+        });
+
+        const navbar = document.querySelector('.navbar .container');
+        const clock = document.createElement('span');
+        clock.classList.add('clock');
+        navbar.appendChild(clock);
+
+        function updateClock() {
+            const now = new Date();
+            clock.textContent = now.toLocaleTimeString();
+        }
+
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        const themeSwitcher = document.getElementById('theme-switcher');
+        const body = document.body;
+        if (localStorage.getItem('theme') === 'dark') {
+            body.classList.add('dark-theme');
+            themeSwitcher.textContent = '☀️';
+        }
+        themeSwitcher.addEventListener('click', () => {
+            body.classList.toggle('dark-theme');
+            const isDark = body.classList.contains('dark-theme');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            themeSwitcher.textContent = isDark ? '☀️' : '🌙';
+        });
+        themeSwitcher.addEventListener('mouseover', () => {
+            themeSwitcher.textContent = body.classList.contains('dark-theme') ? '🌕' : '🌘';
+        });
+        themeSwitcher.addEventListener('mouseout', () => {
+            themeSwitcher.textContent = body.classList.contains('dark-theme') ? '☀️' : '🌙';
+        });
+        document.getElementById('download-cv').addEventListener('click', function () {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.setFontSize(22);
+            doc.text("Dhruv Goyal", 20, 30);
+            doc.setFontSize(16);
+            doc.text("Aspiring Software Developer", 20, 40);
+            doc.text("Email: dhruvgoyal1618@gmail.com", 20, 50);
+            doc.text("Skills:", 20, 60);
+            doc.text("HTML, CSS, JavaScript, C++, C", 20, 70);
+            doc.text("Education:", 20, 80);
+            doc.text("Bachelor’s Degree in Information Technology - IIIT Allahabad (2024 - 2028)", 20, 90);
+            doc.text("High School - Delhi Public School (2020 - 2024)", 20, 100);
+            doc.text("Projects:", 20, 110);
+            doc.text("To-Do List: Web Page for creating personal To-Do List.", 20, 120);
+            doc.text("Fixify: Local Services App.", 20, 130);
+            doc.text("Contact: dhruvgoyal1618@gmail.com", 20, 140);
+
+            doc.save('Dhruv_Goyal_CV.pdf');
+        });
+    </script>
+</body>
+
+</html>
